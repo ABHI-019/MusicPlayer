@@ -1,1 +1,6 @@
 user service/node_modules
+admin service/node_modules
+user service/dist
+admin service/dist
+user service/.env
+admin service/.env
