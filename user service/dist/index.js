@@ -15,6 +15,7 @@ const connectDb = async () => {
     }
 };
 const app = express();
+app.use(express.json());
 app.use("/api/v1", userRoutes);
 app.get("/", (req, res) => {
     res.send("server is running");

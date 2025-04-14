@@ -26,3 +26,41 @@ export const registerUser = TryCatch(async (req, res) => {
         token
     });
 });
+export const loginUser = TryCatch(async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+        res.status(404).json({
+            msg: "User not exist"
+        });
+        return;
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        res.status(400).json({
+            msg: "Invalid Password "
+        });
+        return;
+    }
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SEC, {
+        expiresIn: "7d",
+    });
+    res.status(200).json({
+        msg: "Logged IN",
+        user,
+        token
+    });
+});
+export const myProfile = TryCatch(async (req, res) => {
+    const user = req.user;
+    if (!user) {
+        res.status(404).json({
+            msg: "User not found"
+        });
+        return;
+    }
+    res.status(200).json({
+        msg: "User Profile",
+        user,
+    });
+});
