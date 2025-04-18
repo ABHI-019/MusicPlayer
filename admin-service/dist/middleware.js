@@ -12,10 +12,10 @@ export const isAuth = async (req, res, next) => {
         }
         const { data } = await axios.get(`${process.env.User_URL}/api/v1/user/me`, {
             headers: {
-                token
-            }
+                token,
+            },
         });
-        req.user = data; // Assign the user data to the request object
+        req.user = data.user; // Assign the user data to the request object
         next();
     }
     catch (error) {

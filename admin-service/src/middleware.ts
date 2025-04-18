@@ -28,20 +28,20 @@ export const isAuth=async(req:AuthenticateRequest,res:Response,next:NextFunction
                 return;
             }
 
-            const {data} = await axios.get<IUser>(`${process.env.User_URL}/api/v1/user/me`,{
+            const {data} = await axios.get<{user :IUser}>(`${process.env.User_URL}/api/v1/user/me`,{
                 headers:{
-                    token
-                }
+                    token,
+                },
             });
 
-            req.user = data; // Assign the user data to the request object
+            req.user = data.user; // Assign the user data to the request object
             next();
         }catch(error){
             res.status(403).json({
                 message:"Please login to access this resource",
-            })
+            });
         }
-    }
+    };
 
 //multer setup
 import multer from 'multer';
