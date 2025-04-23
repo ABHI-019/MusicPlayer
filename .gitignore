@@ -1,6 +1,9 @@
-user service/node_modules
-admin service/node_modules
-user service/dist
-admin service/dist
-user service/.env
-admin service/.env
+user-service/node_modules
+admin-service/node_modules
+user-service/dist
+admin-service/dist
+user-service/.env
+admin-service/.env
+song-service/node_modules
+song-service/dist
+song-service/.env
