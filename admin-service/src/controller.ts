@@ -201,4 +201,4 @@ export const deletesong = TryCatch(async (req: AuthenticatedRequest, res) => {
   res.json({
       message: "Song deleted successfully"
   });
-}
+});
