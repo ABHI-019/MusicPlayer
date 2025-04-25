@@ -7,3 +7,6 @@ admin-service/.env
 song-service/node_modules
 song-service/dist
 song-service/.env
+frontend/node_modules
+frontend/dist
+frontend/.env
