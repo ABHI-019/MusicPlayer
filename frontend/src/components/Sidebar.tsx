@@ -31,6 +31,8 @@ export const Sidebar = () => {
         <div onClick={() => navigate("/playlist")}>
           <PlayListCard/>
         </div>
+
+        <div className=""></div>
       </div>
     </div>
   )
