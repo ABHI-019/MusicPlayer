@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, {createContext,ReactNode,use,useCallback,useContext,useEffect,useState} from "react"
+import React, {createContext,ReactNode,useCallback,useContext,useEffect,useState} from "react"
 
 
 const server ="http://localhost:8000"
@@ -27,6 +27,7 @@ interface SongContextType {
     loading: boolean;
     selectedSong: string | null;
     setSelectedSong: (id: string | null) => void;
+    albums: Album[];
 }
 
 const SongContext = createContext<SongContextType |undefined >(undefined)
@@ -40,6 +41,7 @@ export const SongProvider: React.FC<SongProviderProps> = ({children}) => {
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedSong, setSelectedSong] = useState<string | null>(null);
     const [isPlaying , setIsPlaying] = useState<boolean>(false)
+    const [albums, setAlbums] = useState<Album[]>([]);
 
 
 
@@ -59,11 +61,34 @@ export const SongProvider: React.FC<SongProviderProps> = ({children}) => {
         }
         
     },[]);
+
+    const fetchAlbums=useCallback (async() => {
+       
+        try{
+            const {data} = await axios.get<Album[]>(`${server}/api/v1/album/all`)
+            setAlbums(data)
+        }catch(error){
+            console.error("Error fetching albums:", error)
+        }finally{
+            setLoading(false)
+        }
+        
+    },[]);
+
     useEffect(()=>{
-        fetchSongs()
+        fetchSongs();
+        fetchAlbums();
     },[])
     return (
-        <SongContext.Provider value={{songs,selectedSong, setselectedSong,loading,isPlaying,setIsPlaying}}>
+        <SongContext.Provider value={{
+        songs,
+        selectedSong,
+        setSelectedSong,
+        loading,
+        isPlaying,
+        setIsPlaying,
+        albums,
+        }}>
             {children} 
         </SongContext.Provider>
     )
