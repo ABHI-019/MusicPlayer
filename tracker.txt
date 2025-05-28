@@ -2,4 +2,25 @@
 11/04 -> 28.48  (2 min 48 sec )
 13/04/2025 -> 51.09 mins
 
-14/04025 --> 1hour :37min ( middleware )
+14/04/025 --> 1hour :37min ( middleware )
+
+15/04/025 --> 2hour :07min (test admin route)
+
+22-04-25 --> 2hour :17min (add album addeed)
+
+23-04-25 --> 2hour :37min (admin completed)
+
+23-04-25 --> 2hour :55min:40 sec (start reddis)
+
+25-04-25 --> 3 hour : 40 mins (frontend setup)
+
+01-05-25 --> 3 hour : 44 mins (frontend setup)
+
+03-05-25 --> 4 hour : 00 mins (Resume from playListCard)
+
+07-05-25 --> 4 hour : 04 mins 
+08-05-25 --> 4 hour : 16 mins create contxt 
+
+08-05-25 --> 4 hour : 34 mins create contxt 
+
+10-05-25 --> 5 hour : 01 mins : 40 sec  Palyer.tsx

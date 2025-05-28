@@ -30,6 +30,8 @@ interface SongContextType {
     setSelectedSong: (id: string | null) => void;
     albums: Album[];
     fetchSingleSong: () => Promise<void>;
+    nextSong: () => void;
+    prevSong: () => void;
 }
 
 const SongContext = createContext<SongContextType |undefined >(undefined)
@@ -75,7 +77,7 @@ export const SongProvider: React.FC<SongProviderProps> = ({children}) => {
     },[selectedSong]);
 
     const fetchAlbums=useCallback (async() => {
-       
+        setLoading(true)
         try{
             const {data} = await axios.get<Album[]>(`${server}/api/v1/album/all`)
             setAlbums(data)
@@ -86,6 +88,29 @@ export const SongProvider: React.FC<SongProviderProps> = ({children}) => {
         }
         
     },[]);
+
+    const [index, setIndex] = useState<number>(0);
+    const nextSong = useCallback(() => {
+        if (index === songs.length-1){
+            setIndex(0);
+            setSelectedSong(songs[0].id.toString());
+            return;
+        }else{
+            setIndex((prevIndex) => prevIndex + 1);
+            setSelectedSong(songs[index + 1].id.toString());
+        }
+    }, [songs, index]);
+
+    const prevSong = useCallback(() => {
+        if (index === 0){
+            setIndex(songs.length-1);
+            setSelectedSong(songs[songs.length-1].id.toString());
+            return;
+        }else{
+            setIndex((prevIndex) => prevIndex - 1);
+            setSelectedSong(songs[index - 1].id.toString());
+        }
+    }, [songs, index]);
 
     useEffect(()=>{
         fetchSongs();
@@ -101,7 +126,9 @@ export const SongProvider: React.FC<SongProviderProps> = ({children}) => {
         setIsPlaying,
         albums,
         fetchSingleSong,
-        song
+        song,
+        nextSong,
+        prevSong
         }}>
             {children} 
         </SongContext.Provider>
