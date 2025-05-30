@@ -24,3 +24,5 @@
 08-05-25 --> 4 hour : 34 mins create contxt 
 
 10-05-25 --> 5 hour : 01 mins : 40 sec  Palyer.tsx
+
+30-05-5 ->> 6:31.12  , start from song card

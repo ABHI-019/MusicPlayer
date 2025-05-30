@@ -1,7 +1,14 @@
 import { useNavigate } from "react-router-dom";
+import { useUserData } from "../context/UserContext";
 
 const Navbar = () => {
-  const navigate = useNavigate;
+  const navigate = useNavigate();
+  const {isAuth,logotUser}=useUserData();
+  const logoutUserHandler = () => {
+    logotUser();
+    navigate("/");
+  }
+
   return (
     <>
       <div className="w-full flex justify-between items-center
@@ -19,8 +26,14 @@ const Navbar = () => {
           text-[15px] rounded-full hidden md:block">Explore Premium</p>
           <p className="px-4 py-1 cursor-pointer bg-white text-black
           text-[15px] rounded-full hidden md:block">Install App</p>
-          <p className="px-4 py-1 cursor-pointer bg-white text-black
-          text-[15px] rounded-full ">Logout</p>
+          {isAuth? (
+            <p onClick={logoutUserHandler} className="px-4 py-1 cursor-pointer bg-white text-black
+            text-[15px] rounded-full ">Logout</p>):
+            (
+            <p onClick={()=>navigate("/login")} className="px-4 py-1 cursor-pointer bg-white text-black
+            text-[15px] rounded-full ">Login</p>
+            )
+          }
         </div>
       </div>
       <div className="flex items-center gap-2 mt-4">

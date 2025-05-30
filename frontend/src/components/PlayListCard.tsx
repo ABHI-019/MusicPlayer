@@ -1,6 +1,10 @@
 import { FaMusic } from "react-icons/fa6"
+import { useUserData } from "../context/UserContext";
 
 const PlayListCard = () => {
+
+  const { user,isAuth } = useUserData(); 
+
   return (
     <div className="flex items-center p-4 rounded-lg shadow-md cursor-pointer
     hover:bg-[#ffffff26]">
@@ -11,7 +15,7 @@ const PlayListCard = () => {
       <div className="ml-4">
           <h2>My playlist</h2>
           <p className="text-gray-400 text-sm">
-            PlayList • <span>{"User"}</span>
+            PlayList •{" "} {isAuth ? <span>{user ?.name}</span> : <span>{"User"}</span>}
           </p>
       </div>
     </div>
