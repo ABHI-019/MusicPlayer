@@ -4,77 +4,107 @@ import TryCatch from "./TryCatch.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+export const registerUser = TryCatch(async (req, res) => {
+  const { name, email, password } = req.body;
+  let user = await User.findOne({ email });
 
-export const registerUser = TryCatch(async(req,res)=>{
-    const  {name,email,password} = req.body;
-    let user =await User.findOne({email});
-    if(user){
-        res.status(400).json({
-            msg:"user Already Exist"
-        });
-
-        return;
-
-    }
-    const hashPassword = await bcrypt.hash(password,10);
-    user =await User.create({
-        name,
-        email,
-        password:hashPassword
+  if (user) {
+    res.status(400).json({
+      message: "User Already exists",
     });
 
-    const token = jwt.sign({_id: user._id},process.env.JWT_SEC as string,{
-        expiresIn:"7d",
-    });
+    return;
+  }
 
-    res.status(201).json({
-        msg:"user Registered",
-        user,
-        token
-    });
+  const hashPassword = await bcrypt.hash(password, 10);
+
+  user = await User.create({
+    name,
+    email,
+    password: hashPassword,
+  });
+
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_SEC as string, {
+    expiresIn: "7d",
+  });
+
+  res.status(201).json({
+    message: "User Registered",
+    user,
+    token,
+  });
 });
 
-export const loginUser = TryCatch(async(req,res)=>{
-    const {email,password}= req.body
+export const loginUser = TryCatch(async (req, res) => {
+  const { email, password } = req.body;
 
-    const user=await User.findOne({email})
+  const user = await User.findOne({ email });
 
-    if(!user){
-        res.status(404).json({
-            msg:"User not exist"
-        });
-        return;
+  if (!user) {
+    res.status(404).json({
+      message: "User not exists",
+    });
+    return;
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    res.status(400).json({
+      message: "Invalid Password",
+    });
+    return;
+  }
+
+  const token = jwt.sign({ _id: user._id }, process.env.JWT_SEC as string, {
+    expiresIn: "7d",
+  });
+
+  res.status(200).json({
+    message: "Logged IN",
+    user,
+    token,
+  });
+});
+
+export const myProfile = TryCatch(async (req: AuthenticatedRequest, res) => {
+  const user = req.user;
+
+  res.json(user);
+});
+
+export const addToPlaylist = TryCatch(
+  async (req: AuthenticatedRequest, res) => {
+    const userId = req.user?._id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).json({
+        message: "NO user with this id",
+      });
+      return;
     }
 
-    const isMatch = await bcrypt.compare(password,user.password)
-    if(!isMatch){
-        res.status(400).json({
-            msg:"Invalid Password "
-        });
-        return;
+    if (user?.playlist.includes(req.params.id)) {
+      const index = user.playlist.indexOf(req.params.id);
+
+      user.playlist.splice(index, 1);
+
+      await user.save();
+
+      res.json({
+        message: " Removed from playlist",
+      });
+      return;
     }
 
-    const token = jwt.sign({_id: user._id},process.env.JWT_SEC as string,{
-        expiresIn:"7d",
-    });
+    user.playlist.push(req.params.id);
 
-    res.status(200).json({
-        msg:"Logged IN",
-        user,
-        token
-    });
-})
+    await user.save();
 
-export const myProfile = TryCatch(async(req:AuthenticatedRequest,res)=>{
-    const user = req.user;
-    if(!user){
-        res.status(404).json({
-            msg:"User not found"
-        });
-        return;
-    }
-    res.status(200).json({
-        msg:"User Profile",
-        user,
+    res.json({
+      message: "Added to PlayList",
     });
-}) 
+  }
+);
