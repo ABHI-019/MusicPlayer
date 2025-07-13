@@ -2,7 +2,7 @@ import axios from "axios";
 import toast, {Toaster} from "react-hot-toast";
 import { createContext,ReactNode, useContext, useEffect, useState } from "react";
 
-const server = "http://localhost:5000";
+const server = import.meta.env.VITE_USER_SERVICE_URL;
 export interface User {
     _id: string;
     name: string;
@@ -28,7 +28,7 @@ interface UserContextType {
     )=> Promise<void>;
     addToPlaylist: (id: string) => Promise<void>;
     fetchUser: () => Promise<void>;
-    logotUser: () => Promise<void>;
+    logoutUser: () => Promise<void>;
 }
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
@@ -110,7 +110,7 @@ async function registerUser(
         }
     }
 
-    async function logotUser() {
+    async function logoutUser() {
         localStorage.clear();
         setUser(null);
         setIsAuth(false);
@@ -141,7 +141,7 @@ async function registerUser(
     }, []);
 
     return (
-        <UserContext.Provider value={{user, isAuth, loading,btnLoading, loginUser, registerUser, logotUser, addToPlaylist, fetchUser}}>
+        <UserContext.Provider value={{user, isAuth, loading,btnLoading, loginUser, registerUser, logoutUser, addToPlaylist, fetchUser}}>
             {children}
             <Toaster/>
         </UserContext.Provider>

@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 
-const server = "http://localhost:7000";
+const server = import.meta.env.VITE_SONG_SERVICE_URL;
 
 export interface Song {
   id: string;
