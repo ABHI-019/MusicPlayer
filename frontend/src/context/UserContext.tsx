@@ -1,8 +1,9 @@
 import axios from "axios";
-import toast, {Toaster} from "react-hot-toast";
-import { createContext,ReactNode, useContext, useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 const server = import.meta.env.VITE_USER_SERVICE_URL;
+
 export interface User {
     _id: string;
     name: string;
@@ -10,6 +11,7 @@ export interface User {
     role: string;
     playlist: string[];
 }
+
 interface UserContextType {
     user: User | null;
     isAuth: boolean;
@@ -19,17 +21,18 @@ interface UserContextType {
         email: string,
         password: string,
         navigate: (path: string) => void
-    )=> Promise<void>;
+    ) => Promise<void>;
     registerUser: (
         name: string,
         email: string,
         password: string,
         navigate: (path: string) => void
-    )=> Promise<void>;
+    ) => Promise<void>;
     addToPlaylist: (id: string) => Promise<void>;
     fetchUser: () => Promise<void>;
     logoutUser: () => Promise<void>;
 }
+
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 interface UserProviderProps {
@@ -42,12 +45,12 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const [isAuth, setIsAuth] = useState(false);
     const [btnLoading, setBtnLoading] = useState(false);
 
-async function registerUser(
-        name:string,
-        email:string,
-        password:string,
+    async function registerUser(
+        name: string,
+        email: string,
+        password: string,
         navigate: (path: string) => void
-     ){
+    ) {
         setBtnLoading(true);
         try {
             const { data } = await axios.post(`${server}/api/v1/user/register`, {
@@ -63,17 +66,16 @@ async function registerUser(
             setBtnLoading(false);
             navigate("/");
         } catch (error: any) {
-            toast.error(error.response?.data?.message || "Login failed");
+            toast.error(error.response?.data?.message || "Registration failed");
             setBtnLoading(false);
         }
-        
     }
 
     async function loginUser(
-        email:string,
-        password:string,
+        email: string,
+        password: string,
         navigate: (path: string) => void
-     ){
+    ) {
         setBtnLoading(true);
         try {
             const { data } = await axios.post(`${server}/api/v1/user/login`, {
@@ -91,14 +93,19 @@ async function registerUser(
             toast.error(error.response?.data?.message || "Login failed");
             setBtnLoading(false);
         }
-        
     }
 
-    async function fetchUser(){
+    async function fetchUser() {
         try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                setLoading(false);
+                return;
+            }
+
             const { data } = await axios.get(`${server}/api/v1/user/me`, {
                 headers: {
-                    token: localStorage.getItem("token")
+                    token: token
                 }
             });
             setUser(data);
@@ -106,6 +113,9 @@ async function registerUser(
             setLoading(false);
         } catch (error) {
             console.error("Error fetching user data:", error);
+            localStorage.removeItem("token");
+            setUser(null);
+            setIsAuth(false);
             setLoading(false);
         }
     }
@@ -117,22 +127,18 @@ async function registerUser(
         toast.success("Logged out successfully");
     }
 
-    async function addToPlaylist(id:string) {
-        try{
-            const {data}= await axios.post(`${server}/api/v1/song/${id}`,{},
-                {
-                    headers: {
-                        token: localStorage.getItem("token")
-                    }
+    async function addToPlaylist(id: string) {
+        try {
+            const { data } = await axios.post(`${server}/api/v1/song/${id}`, {}, {
+                headers: {
+                    token: localStorage.getItem("token")
                 }
-            );
+            });
             toast.success(data.message);
             fetchUser();
-
-        }catch(error :any) {
+        } catch (error: any) {
             toast.error(error.response?.data?.message || "Failed to add to playlist");
         }
-        
     }
 
     // Fetch user data when the provider mounts
@@ -141,18 +147,17 @@ async function registerUser(
     }, []);
 
     return (
-        <UserContext.Provider value={{user, isAuth, loading,btnLoading, loginUser, registerUser, logoutUser, addToPlaylist, fetchUser}}>
+        <UserContext.Provider value={{ user, isAuth, loading, btnLoading, loginUser, registerUser, logoutUser, addToPlaylist, fetchUser }}>
             {children}
-            <Toaster/>
+            <Toaster />
         </UserContext.Provider>
     );
 };
 
-export const useUserData=():UserContextType=>{
+export const useUserData = (): UserContextType => {
     const context = useContext(UserContext);
-    // Use the correct hook name
     if (!context) {
         throw new Error("useUserData must be used within a UserProvider");
     }
     return context;
-}
+};
