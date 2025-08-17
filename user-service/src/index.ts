@@ -7,6 +7,15 @@ import cors from 'cors';
 
 dotenv.config()
 
+// Validate required environment variables
+const requiredEnvVars = ['MONGO_URI', 'JWT_SEC'];
+for (const envVar of requiredEnvVars) {
+    if (!process.env[envVar]) {
+        console.error(`Missing required environment variable: ${envVar}`);
+        process.exit(1);
+    }
+}
+
 const connectDb= async()=>{
     try{
         mongoose.connect(process.env.MONGO_URI as string,{
@@ -33,7 +42,7 @@ app.get("/",(req,res)=>{
 });
 const port=process.env.PORT || 5000;
 
-app.listen(5000,()=>{
-    console.log(`Server is running on port${port}`);
+app.listen(port,()=>{
+    console.log(`Server is running on port ${port}`);
     connectDb()
 })

@@ -1,15 +1,36 @@
-user-service/node_modules
-admin-service/node_modules
-user-service/dist
-admin-service/dist
+# Node modules
+node_modules/
+user-service/node_modules/
+admin-service/node_modules/
+song-service/node_modules/
+frontend/node_modules/
+
+# Build output
+dist/
+user-service/dist/
+admin-service/dist/
+song-service/dist/
+frontend/dist/
+
+# Environment variables
+.env
+*.env
 user-service/.env
 admin-service/.env
-song-service/node_modules
-song-service/dist
 song-service/.env
-frontend/node_modules
-frontend/dist
 frontend/.env
 
-env
-.env
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/

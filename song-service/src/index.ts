@@ -6,11 +6,20 @@ import cors from 'cors';
 
 dotenv.config();
 
+// Validate required environment variables
+const requiredEnvVars = ['DB_URL', 'Redis_Password'];
+for (const envVar of requiredEnvVars) {
+    if (!process.env[envVar]) {
+        console.error(`Missing required environment variable: ${envVar}`);
+        process.exit(1);
+    }
+}
+
 export const redisClient = redis.createClient({
     password:process.env.Redis_Password,
     socket: {
-        host:"redis-18948.c264.ap-south-1-1.ec2.redns.redis-cloud.com",
-        port: 18948,
+        host:process.env.Redis_Host || "redis-18948.c264.ap-south-1-1.ec2.redns.redis-cloud.com",
+        port: parseInt(process.env.Redis_Port || "18948"),
     },
 
 });
