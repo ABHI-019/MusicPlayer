@@ -1,3 +1,26 @@
+// Explicitly handle OPTIONS for /api/v1/user/register to guarantee CORS headers and 204 response
+app.options('/api/v1/user/register', (req, res) => {
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+        'https://music-player-frontend-pi.vercel.app',
+        'https://music-player-song.vercel.app',
+        'https://music-player-admin-mu.vercel.app',
+        'https://music-player-user.vercel.app',
+        'http://localhost:5173'
+    ];
+    if (origin && allowedOrigins.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin);
+        res.header('Access-Control-Allow-Credentials', 'true');
+        res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    }
+    res.sendStatus(204);
+});
+
+
+
+
+
 import express from 'express';
 import dotenv from "dotenv";
 import mongoose from 'mongoose';
