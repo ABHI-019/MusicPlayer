@@ -36,7 +36,29 @@ redisClient.connect().then(() => {
 
 const app = express();
 
-app.use(cors());
+
+// CORS configuration
+const allowedOrigins = [
+    'https://music-player-frontend-pi.vercel.app',
+    'https://music-player-song.vercel.app',
+    'https://music-player-admin-mu.vercel.app',
+    'https://music-player-user.vercel.app',
+    'http://localhost:5173'
+];
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Handle preflight OPTIONS requests for all routes
+app.options('*', cors({
+    origin: allowedOrigins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Use express.json() before routes
 app.use(express.json());
